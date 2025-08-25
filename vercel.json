@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "wsgi.py"
+    }
+  ],
+  "env": {
+    "FLASK_ENV": "production",
+    "SECRET_KEY": "2d2c5c6476929240e999d4487136ecf06f223dc9e7c381272bf7ae4eaf0c13ab"
+  }
+}
+

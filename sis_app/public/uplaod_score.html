@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Score</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('views.lecturer_dashboard') }}">Lecturer Dashboard</a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="{{ url_for('views.logout') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container content">
+        <h2>Upload Score for {{ course.course_title }}</h2>
+        <form action="{{ url_for('views.lecturer_upload_score', course_id=course.id) }}" method="POST" class="form-container">
+            <div class="form-group">
+                <label for="student_id">Student ID:</label>
+                <input type="text" id="student_id" name="student_id" required>
+            </div>
+            <div class="form-group">
+                <label for="score">Score:</label>
+                <input type="number" id="score" name="score" required min="0" max="100">
+            </div>
+            <button type="submit" class="btn">Upload Score</button>
+        </form>
+    </div>
+</body>
+</html>

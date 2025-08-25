@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Results</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <h3>{{ current_user.name or 'Student' }}</h3>
+    <p><strong>Unique ID:</strong> {{ current_user.unique_id }}</p>
+    {% if scores %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Course Code</th>
+                    <th>Title</th>
+                    <th>CA Score</th>
+                    <th>Exam Score</th>
+                    <th>Total Score</th>
+                    <th>Grade Point</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score in scores %}
+                    <tr>
+                        <td>{{ score.course.code }}</td>
+                        <td>{{ score.course.title }}</td>
+                        <td>{{ score.ca_score if score.ca_score is not none else 'N/A' }}</td>
+                        <td>{{ score.exam_score if score.exam_score is not none else 'N/A' }}</td>
+                        <td>{{ (score.ca_score or 0) + (score.exam_score or 0) }}</td>
+                        <td>{{ score.calculate_grade_point() }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p><strong>GPA:</strong> {{ "%.2f" % gpa }}</p>
+    {% else %}
+        <p>No results available.</p>
+    {% endif %}
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}

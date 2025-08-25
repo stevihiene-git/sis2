@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}My Results{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">My Results</h1>
+            <a href="{{ url_for('views.student_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Course Code</th>
+                        <th>Course Title</th>
+                        <th>Lecturer</th>
+                        <th>Score</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result.course.code }}</td>
+                        <td>{{ result.course.title }}</td>
+                        <td>{{ result.course.lecturer.name if result.course.lecturer else 'N/A' }}</td>
+                        <td>{{ result.score }}</td>
+                        <td>{{ result.grade }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

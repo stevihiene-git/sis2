@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Scores - Lecturer Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2><i class="fas fa-upload"></i> Upload Scores</h2>
+    <p>Upload scores for {{ course.code }} - {{ course.title }}</p>
+</div>
+
+<div class="form-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'error' if category == 'error' else 'success' if category == 'success' else 'info' }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/lecturer/upload_score/{{ course.id }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>CA Score (0-40)</th>
+                        <th>Exam Score (0-60)</th>
+                        <th>Total Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.user.unique_id }}</td>
+                        <td>{{ student.user.name }}</td>
+                        <td>
+                            <input type="number" name="ca_score_{{ student.id }}"
+                                   value="{{ existing_scores[student.id].ca_score if student.id in existing_scores and existing_scores[student.id].ca_score is not none else '' }}"
+                                   min="0" max="40" step="0.5" class="form-control">
+                        </td>
+                        <td>
+                            <input type="number" name="exam_score_{{ student.id }}"
+                                   value="{{ existing_scores[student.id].exam_score if student.id in existing_scores and existing_scores[student.id].exam_score is not none else '' }}"
+                                   min="0" max="60" step="0.5" class="form-control">
+                        </td>
+                        <td>
+                            {% if student.id in existing_scores %}
+                                {{ (existing_scores[student.id].ca_score or 0) + (existing_scores[student.id].exam_score or 0) }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">No students registered for this course yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if students %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Save Scores
+            </button>
+            <a href="/lecturer/dashboard" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+        {% endif %}
+    </form>
+</div>
+
+<style>
+.form-container {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #790100;
+    color: white;
+}
+
+.table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background-color: #790100;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #5a0100;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Arvo', serif;
+}
+
+.form-control:focus {
+    border-color: #790100;
+    outline: none;
+}
+
+.text-center {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table {
+        font-size: 0.9rem;
+    }
+
+    .table th, .table td {
+        padding: 8px;
+    }
+
+    .btn {
+        margin: 2px;
+        font-size: 12px;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Finance Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Finance Dashboard</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Unique ID</th>
+                        <th>Email</th>
+                        <th>Balance (NGN)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.user.name }}</td>
+                        <td>{{ student.user.unique_id }}</td>
+                        <td>{{ student.user.email }}</td>
+                        <td>{{ "%.2f"|format(student.balance) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

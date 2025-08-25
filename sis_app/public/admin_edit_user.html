@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Edit User - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2><i class="fas fa-user-edit"></i> Edit User</h2>
+    <p>Update user information for {{ user.name }}</p>
+</div>
+
+<div class="form-container">
+    <form method="POST" action="">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="unique_id">Unique ID *</label>
+                <input type="text" class="form-control" id="unique_id" name="unique_id" 
+                       value="{{ user.unique_id }}" required>
+                <small class="form-text">Unique identifier for the user</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" class="form-control" id="name" name="name" 
+                       value="{{ user.name }}" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="role">Role *</label>
+                <select class="form-control" id="role" name="role" required>
+                    <option value="">Select Role</option>
+                    <option value="Student" {% if user.role == 'Student' %}selected{% endif %}>Student</option>
+                    <option value="Lecturer" {% if user.role == 'Lecturer' %}selected{% endif %}>Lecturer</option>
+                    <option value="Admin" {% if user.role == 'Admin' %}selected{% endif %}>Admin</option>
+                    <option value="Finance" {% if user.role == 'Finance' %}selected{% endif %}>Finance</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="faculty">Faculty *</label>
+                <input type="text" class="form-control" id="faculty" name="faculty" 
+                       value="{{ user.faculty or '' }}" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="department">Department *</label>
+                <input type="text" class="form-control" id="department" name="department" 
+                       value="{{ user.department or '' }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" 
+                       value="{{ user.email or '' }}">
+                <small class="form-text">Optional - can be added later</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="is_active" name="is_active" 
+                       {% if user.is_active %}checked{% endif %}>
+                <label class="form-check-label" for="is_active">Active Account</label>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Update User
+            </button>
+            <a href="{{ url_for('views.admin_dashboard') }}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+.form-container {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #790100;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Arvo', serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #790100;
+    outline: none;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.form-check-input {
+    margin-right: 10px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: #790100;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #5a0100;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}

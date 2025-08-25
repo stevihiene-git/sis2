@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Student Results - SIS{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2><i class="fas fa-chart-bar"></i> Academic Results</h2>
+    <p>Welcome, {{ current_user.name }}. Here are your academic results.</p>
+</div>
+
+<div class="dashboard-section">
+    {% if results_by_session_semester %}
+        <!-- Overall CGPA -->
+        <div class="cgpa-card" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; border-left: 4px solid #790100;">
+            <h3>Overall Academic Performance</h3>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #790100;">
+                CGPA: {{ cgpa }}
+            </div>
+            <div style="font-size: 1.2rem; margin-top: 10px;">
+                Final Grade: <strong>{{ final_grade }}</strong>
+            </div>
+        </div>
+
+        <!-- Results by Session and Semester -->
+        {% for session, semesters in results_by_session_semester.items() %}
+            <div class="session-results" style="margin-bottom: 30px;">
+                <h3 style="color: #790100; border-bottom: 2px solid #790100; padding-bottom: 10px;">
+                    {{ session }} Academic Session
+                </h3>
+
+                {% for semester, scores in semesters.items() %}
+                    <div class="semester-results" style="margin-bottom: 20px;">
+                        <h4>{{ semester }} Semester</h4>
+
+                        <div class="table-responsive">
+                            <table class="table" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background-color: #790100; color: white;">
+                                        <th style="padding: 12px; text-align: left;">Course Code</th>
+                                        <th style="padding: 12px; text-align: left;">Course Title</th>
+                                        <th style="padding: 12px; text-align: center;">Units</th>
+                                        <th style="padding: 12px; text-align: center;">CA Score</th>
+                                        <th style="padding: 12px; text-align: center;">Exam Score</th>
+                                        <th style="padding: 12px; text-align: center;">Total Score</th>
+                                        <th style="padding: 12px; text-align: center;">Grade</th>
+                                        <th style="padding: 12px; text-align: center;">Grade Point</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for score in scores %}
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <td style="padding: 12px;">{{ score.course.code }}</td>
+                                            <td style="padding: 12px;">{{ score.course.title }}</td>
+                                            <td style="padding: 12px; text-align: center;">{{ score.course.unit }}</td>
+                                            <td style="padding: 12px; text-align: center;">{{ score.ca_score if score.ca_score is not none else '-' }}</td>
+                                            <td style="padding: 12px; text-align: center;">{{ score.exam_score if score.exam_score is not none else '-' }}</td>
+                                            <td style="padding: 12px; text-align: center;">
+                                                {% set total_score = (score.ca_score or 0) + (score.exam_score or 0) %}
+                                                {{ total_score if total_score > 0 else '-' }}
+                                            </td>
+                                            <td style="padding: 12px; text-align: center;">
+                                                {% if total_score >= 70 %}A
+                                                {% elif total_score >= 60 %}B
+                                                {% elif total_score >= 50 %}C
+                                                {% elif total_score >= 45 %}D
+                                                {% elif total_score >= 40 %}E
+                                                {% else %}F
+                                                {% endif %}
+                                            </td>
+                                            <td style="padding: 12px; text-align: center;">
+                                                {{ score.calculate_grade_point() / score.course.unit if score.course.unit > 0 else 0 }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="text-align: right; margin-top: 10px;">
+                            <strong>Semester GPA: {{ gpa_by_session_semester[session][semester] }}</strong>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <p>No results available yet. Please check back later.</p>
+        </div>
+    {% endif %}
+</div>
+
+<div class="dashboard-actions">
+    <a href="{{ url_for('views.student_dashboard') }}" class="btn btn-primary">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+    <button onclick="window.print()" class="btn btn-secondary">
+        <i class="fas fa-print"></i> Print Results
+    </button>
+</div>
+
+<style>
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #790100;
+    color: white;
+}
+
+.table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #790100;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #5a0100;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table {
+        font-size: 0.9rem;
+    }
+
+    .table th, .table td {
+        padding: 8px;
+    }
+}
+</style>
+{% endblock %}

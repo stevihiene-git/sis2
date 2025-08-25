@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Register Courses - Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2><i class="fas fa-book"></i> Register Courses</h2>
+    <p>Select courses for the current semester</p>
+</div>
+
+<div class="form-container">
+    <!-- Debug information (can be removed later) -->
+    <div class="debug-info" style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        <h4>Debug Information:</h4>
+        <p>Total courses in system: {{ all_courses|length }}</p>
+        <p>Courses already registered: {{ registered_courses|length }}</p>
+        <p>Available courses: {{ courses|length }}</p>
+    </div>
+
+    <form method="POST" action="/student/register_course">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+        {% if courses %}
+        <div class="course-selection">
+            <h3>Available Courses ({{ courses|length }})</h3>
+            <p>Select the courses you want to register for:</p>
+            
+            <div class="courses-grid">
+                {% for course in courses %}
+                <div class="course-checkbox">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="courses" value="{{ course.id }}">
+                        <span class="checkmark"></span>
+                        <div class="course-info">
+                            <strong>{{ course.code }} - {{ course.title }}</strong>
+                            <br>
+                            <small>
+                                {{ course.unit }} Units • {{ course.session }} • {{ course.semester }}
+                                {% if course.lecturer %}
+                                <br>Lecturer: {{ course.lecturer.name }}
+                                {% endif %}
+                            </small>
+                        </div>
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Register Selected Courses
+                </button>
+                <a href="/student/dashboard" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <p>No courses available for registration at this time.</p>
+            <p>This could be because:</p>
+            <ul>
+                <li>No courses have been created by administrators</li>
+                <li>You have already registered for all available courses</li>
+                <li>There are no courses for the current semester</li>
+            </ul>
+            <a href="/student/dashboard" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        {% endif %}
+    </form>
+</div>
+
+<style>
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.course-checkbox {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.course-checkbox:hover {
+    border-color: #790100;
+    box-shadow: 0 2px 8px rgba(121, 1, 0, 0.1);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-right: 15px;
+    margin-top: 3px;
+}
+
+.course-info {
+    flex: 1;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark + .course-info {
+    color: #790100;
+    font-weight: bold;
+}
+
+.form-container {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.alert {
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background-color: #790100;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #5a0100;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+.debug-info {
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .courses-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-container {
+        padding: 15px;
+    }
+}
+</style>
+{% endblock %}

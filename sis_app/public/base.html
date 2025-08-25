@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Information System{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Add all your CSS styles here in the base template */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arvo', serif;
+            background-color: #F9F6CC;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Add all other styles from previous base.html here */
+        /* ... your existing base.html styles ... */
+        .navbar {
+            background-color: #790100;
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .navbar-brand {
+            color: #ffffff;
+            font-size: 1.5rem;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item {
+            margin-left: 20px;
+        }
+
+        .nav-item a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-item a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-form {
+            display: inline;
+            margin: 0;
+            padding: 0;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: inherit;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .content {
+            margin-top: 80px;
+            padding: 20px;
+        }
+
+        /* Flash messages */
+        .flash-messages {
+            margin: 20px 0;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Your navigation and content -->
+<nav class="navbar">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-graduation-cap"></i> SIS
+        </a>
+
+        {% if current_user.is_authenticated %}
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a href="/{{ current_user.role.lower() }}/dashboard">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+
+            {% if current_user.role == 'Student' %}
+            <li class="nav-item">
+                <a href="/student/register_course">
+                    <i class="fas fa-book"></i> Register Courses
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/student/results">
+                    <i class="fas fa-chart-bar"></i> Results
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Other role-specific navigation items -->
+
+            <li class="nav-item">
+                <form class="logout-form" action="/auth/logout" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout ({{ current_user.name }})
+                    </button>
+                </form>
+            </li>
+        </ul>
+        {% endif %}
+    </div>
+</nav>
+    {% block content %}{% endblock %}
+</body>
+</html>
