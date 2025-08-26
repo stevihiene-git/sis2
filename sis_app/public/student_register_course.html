@@ -10,12 +10,12 @@
 
 <div class="form-container">
     <!-- Debug information (can be removed later) -->
-    <div class="debug-info" style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+<!--     <div class="debug-info" style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
         <h4> Information:</h4>
         <p>Total courses in system: {{ all_courses|length }}</p>
         <p>Courses already registered: {{ registered_courses|length }}</p>
         <p>Available courses: {{ courses|length }}</p>
-    </div>
+    </div> -->
 
     <form method="POST" action="/student/register_course">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -178,3 +178,4 @@
 </style>
 
 {% endblock %}
+
