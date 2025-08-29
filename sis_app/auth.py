@@ -73,19 +73,13 @@ def signup():
         if errors:
             for error in errors:
                 flash(error, 'error')
-            return render_template('signup.html',
-                                 unique_id=unique_id,
-                                 name=name,
-                                 email=email)
+            return render_template('signup.html',unique_id=unique_id,name=name,email=email)
 
         # Check if user exists
         user = User.query.filter_by(unique_id=unique_id).first()
         if not user:
             flash('Unique ID not found. Please contact admin to be added.', 'error')
-            return render_template('signup.html',
-                                 unique_id=unique_id,
-                                 name=name,
-                                 email=email)
+            return render_template('signup.html',unique_id=unique_id,name=name,email=email)
 
         if user.is_active:
             flash('Account already activated. Please log in.', 'error')
@@ -93,10 +87,7 @@ def signup():
 
         if User.query.filter_by(email=email).first():
             flash('Email already in use by another account.', 'error')
-            return render_template('signup.html',
-                                 unique_id=unique_id,
-                                 name=name,
-                                 email=email)
+            return render_template('signup.html',unique_id=unique_id,name=name,email=email)
 
         # Update user
         try:
@@ -118,10 +109,7 @@ def signup():
         except Exception as e:
             db.session.rollback()
             flash('Error completing profile. Please try again.', 'error')
-            return render_template('signup.html',
-                                 unique_id=unique_id,
-                                 name=name,
-                                 email=email)
+            return render_template('signup.html', unique_id=unique_id,name=name,email=email)
 
     return render_template('signup.html')
 
