@@ -480,14 +480,14 @@ def student_results():
         cgpa = round(overall_total_points / overall_total_units, 2) if overall_total_units > 0 else 0.0
 
         # Determine final grade based on CGPA
-        if cgpa >= 3.5:
+        if cgpa >= 3.0:
             final_grade = "DISTINCTION"
-        elif cgpa >= 2.5:
-            final_grade = "CREDIT"
-        elif cgpa >= 2.0:
-            final_grade = "PASS"
+        # elif cgpa >= 2.5:
+        #     final_grade = "CREDIT"
+        # elif cgpa >= 2.0:
+        #     final_grade = "PASS"
         else:
-            final_grade = "FAIL"
+            final_grade = "PASS"
 
         return render_template(
             'student_results.html',
@@ -660,4 +660,5 @@ def lecturer_dashboard():
         student_count += registrations
 
     return render_template('lecturer_dashboard.html', courses=courses,
+
                          course_count=course_count, student_count=student_count)
