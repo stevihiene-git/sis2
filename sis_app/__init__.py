@@ -17,7 +17,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy()
 login_manager = LoginManager()
 csrf = CSRFProtect()
-migrate = Migrate()  # ADD THIS LINE
+migrate = Migrate()  # # Initialize Migrate
 
 # Configuration
 app.config['SECRET_KEY'] =  "2d2c5c6476929240e999d4487136ecf06f223dc9e7c381272bf7ae4eaf0c13ab" #  os.environ.get('SECRET_KEY') or secrets.token_hex(32)
